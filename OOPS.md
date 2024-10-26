@@ -1,6 +1,8 @@
 
 Here’s a comprehensive overview of **Object-Oriented Programming (OOP) in Java**, along with code examples and real-life analogies for better understanding:
 
+https://www.lambdatest.com/learning-hub/oops-interview-questions
+
 ---
 
 ## **1. Basics of OOP**
