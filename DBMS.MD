@@ -3,6 +3,8 @@ Here is a comprehensive overview of **Database Management Systems (DBMS)** with 
 
 ---
 
+https://www.geeksforgeeks.org/commonly-asked-dbms-interview-questions/
+
 ## **1. Basics of DBMS**
 **Database Management Systems (DBMS)** are software systems used to store, retrieve, and manage data efficiently. Examples include MySQL, Oracle, and MongoDB.
 
