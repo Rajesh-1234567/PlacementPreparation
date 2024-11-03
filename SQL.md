@@ -236,3 +236,12 @@ FROM Employees;
 ---
 
 If you master these topics, you'll gain a solid understanding of SQL and its practical applications, allowing you to tackle complex database-related tasks in real-world scenarios.
+
+
+
+
+
+
+
+
+1- https://www.geeksforgeeks.org/how-to-print-duplicate-rows-in-a-table/
