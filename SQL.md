@@ -1,4 +1,4 @@
-
+https://www.geeksforgeeks.org/sql-query-interview-questions/
 Here's a comprehensive breakdown of essential SQL topics, including brief explanations, code examples, and real-life applications:
 
 ---
