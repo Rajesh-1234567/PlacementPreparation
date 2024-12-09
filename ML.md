@@ -1,3 +1,5 @@
+https://docs.google.com/document/d/10XqvDZsXXqlpcgXS3kzkllNsZaPD11B_tr0mhN1DOcQ/edit?tab=t.0
+
 Here's a detailed overview of various machine learning algorithms, covering both supervised and unsupervised methods, as well as reinforcement learning techniques. Each algorithm includes its purpose, intuition, key concepts, advantages, disadvantages, and common use cases.
 
 ---
