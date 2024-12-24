@@ -180,23 +180,104 @@ In summary, **OOB error** is a valuable metric for evaluating ensemble models, p
 ----------------------------------------------------------------------------------------------------------------------------------------
 11- In what scenario decision tree should be preferred over random forest?
 ----------------------------------------------------------------------------------------------------------------------------------------
+A decision tree might be preferred over a random forest in the following scenarios:
 
+### 1. **Interpretability and Simplicity**
+   - **Why:** A single decision tree is much easier to interpret, visualize, and explain to stakeholders than a random forest, which combines multiple decision trees.
+   - **Example Use Case:** If your primary goal is to provide a straightforward explanation of the model's predictions, such as in business or healthcare applications where interpretability is crucial.
+
+---
+
+### 2. **Low Resource and Computational Constraints**
+   - **Why:** Training and using a single decision tree require less computational power and memory compared to a random forest.
+   - **Example Use Case:** When working on a low-resource device or when quick predictions are needed in a resource-constrained environment.
+
+---
+
+### 3. **Small Datasets**
+   - **Why:** For smaller datasets, a decision tree can effectively capture patterns without the risk of overfitting to the extent that might require ensemble methods.
+   - **Example Use Case:** When the dataset size is small and straightforward relationships exist between features and the target variable.
+
+---
+
+### 4. **Avoiding Overfitting Concerns**
+   - **Why:** A well-tuned decision tree with proper constraints (like maximum depth or minimum samples per leaf) may suffice without requiring the complexity of a random forest.
+   - **Example Use Case:** In problems where the feature space is limited, and the risk of overfitting can be controlled easily.
+
+---
+
+### 5. **Faster Training and Prediction**
+   - **Why:** Training a single decision tree is much faster than training multiple trees in a random forest.
+   - **Example Use Case:** When time-sensitive decisions need to be made during training or prediction.
+
+---
+
+### 6. **Exploratory Data Analysis (EDA)**
+   - **Why:** A decision tree can quickly show feature importance and splits, which is helpful during EDA to understand relationships in the data.
+   - **Example Use Case:** When trying to identify the most influential features for the target variable during initial model exploration.
+
+---
+
+### Key Consideration:
+While decision trees are useful in the above scenarios, they are prone to overfitting and can produce high variance. Random forests are generally preferred for their robustness and ability to generalize well, but the added complexity isn't always necessary depending on the use case.
 ----------------------------------------------------------------------------------------------------------------------------------------
 12- Why Logistic Regression is called regression?
 ----------------------------------------------------------------------------------------------------------------------------------------
-
+Logistic Regression is called "regression" because it originates from linear regression, modeling the relationship between features and the probability of an outcome. It uses regression techniques to predict continuous probabilities (not directly class labels) and applies the sigmoid function to map these probabilities. The term comes from its historical development as an extension of regression for classification problems.
 ----------------------------------------------------------------------------------------------------------------------------------------
 13- What is Online Machine Learning? How is it different from Offline machine learning? List some of it’s applications
 ----------------------------------------------------------------------------------------------------------------------------------------
+### **What is Online Machine Learning?**  
+Online Machine Learning trains models incrementally, updating them as new data arrives, without needing to process the entire dataset at once. It is efficient, adaptable to real-time changes, and suitable for streaming data.
 
+---
+
+### **Difference Between Online and Offline Machine Learning**  
+| **Aspect**         | **Online ML**                      | **Offline ML**                  |
+|--------------------|------------------------------------|---------------------------------|
+| **Data Processing** | Incremental (one instance/batch). | Full dataset at once (batch).  |
+| **Model Updates**   | Continuous, real-time.            | Requires retraining.           |
+| **Adaptability**    | Adapts to changes (concept drift).| Less adaptable.                |
+| **Resource Use**    | Memory and computationally efficient. | Resource-intensive.           |
+
+---
+
+### **Applications**  
+- Real-time recommendations (Netflix, Spotify).  
+- Fraud detection (credit cards).  
+- Stock market predictions.  
+- Predictive maintenance.  
+- Spam filtering.  
+- IoT data analysis.  
+- Dynamic pricing (ride-sharing apps).  
 ----------------------------------------------------------------------------------------------------------------------------------------
 14- What is No Free Lunch Theorem?
 ----------------------------------------------------------------------------------------------------------------------------------------
+The **No Free Lunch Theorem** asserts that no algorithm outperforms all others across every possible problem. Each algorithm's success depends on the problem's structure and assumptions. For machine learning, this means:  
 
+1. **Algorithm Suitability:** An algorithm may excel in one scenario (e.g., neural networks for complex patterns) but fail in another (e.g., linear regression for simple trends).  
+2. **Trade-offs:** Models must balance bias, variance, and complexity based on the data.  
+3. **Hyperparameter Dependence:** No universal settings exist; tuning is specific to the task.  
+
+The theorem emphasizes the need for problem-specific choices in model selection and optimization.
 ----------------------------------------------------------------------------------------------------------------------------------------
 15- Imagine you are woking with a laptop of 2GB RAM, how would you process a dataset of 10GB?
 ----------------------------------------------------------------------------------------------------------------------------------------
+To process a 10GB dataset on a laptop with only 2GB of RAM, you can use the following approaches:
 
+1. **Incremental Learning:** Update models in small increments as new data comes in without needing to load the entire dataset into memory. 
+   - **Libraries:** Scikit-learn, TensorFlow, Keras.
+
+2. **Chunking:** Load data in smaller chunks instead of the whole dataset at once.
+   - **Libraries:** Pandas, Dask.
+
+3. **Out-of-Core Processing:** Work with large datasets stored on disk rather than loading them into memory all at once.
+   - **Libraries:** Vaex, Dask, PySpark.
+
+4. **Efficient Storage Formats:** Use compressed or more efficient data formats to reduce memory usage.
+   - **Libraries:** HDF5, Apache Arrow.
+
+These methods allow you to efficiently work with a 10GB dataset without exceeding the available RAM.
 ----------------------------------------------------------------------------------------------------------------------------------------
 16- What are the main differences between Structured and Unstructured Data?
 ----------------------------------------------------------------------------------------------------------------------------------------
