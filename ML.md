@@ -281,15 +281,88 @@ These methods allow you to efficiently work with a 10GB dataset without exceedin
 ----------------------------------------------------------------------------------------------------------------------------------------
 16- What are the main differences between Structured and Unstructured Data?
 ----------------------------------------------------------------------------------------------------------------------------------------
-
+1. **Structured data** is highly organized and stored in predefined formats like tables, while **unstructured data** lacks a specific format and includes text, images, or videos.  
+2. **Structured data** is stored in relational databases, whereas **unstructured data** is stored in data lakes or NoSQL systems.  
+3. **Structured data** follows a defined schema, making it easy to query, while **unstructured data** requires specialized tools for analysis.  
+4. Examples of **structured data** include customer databases and financial transactions, while **unstructured data** includes emails, social media posts, and multimedia.  
+5. **Structured data** is less flexible, needing schema changes for updates, while **unstructured data** adapts to various formats but is harder to analyze.  
 ----------------------------------------------------------------------------------------------------------------------------------------
 17- What are the main points of difference between Bagging and Boosting?
 ----------------------------------------------------------------------------------------------------------------------------------------
+Here are the main points of difference between **Bagging** and **Boosting**:
 
+### 1. **Objective**:
+   - **Bagging**: Aims to reduce variance by creating multiple independent models and combining their predictions (e.g., voting or averaging).  
+   - **Boosting**: Aims to reduce bias by sequentially building models, where each new model corrects the errors of the previous one.  
+
+---
+
+### 2. **Model Independence**:
+   - **Bagging**: Models are built independently of each other.  
+   - **Boosting**: Models are built sequentially, with each model relying on the performance of the previous ones.  
+
+---
+
+### 3. **Data Sampling**:
+   - **Bagging**: Uses random sampling with replacement (bootstrap sampling) to create diverse subsets of the training data.  
+   - **Boosting**: Focuses on the misclassified samples by assigning higher weights to them in subsequent iterations.  
+
+---
+
+### 4. **Combining Models**:
+   - **Bagging**: Combines predictions through averaging (for regression) or majority voting (for classification).  
+   - **Boosting**: Combines models by assigning weights to them based on their performance, giving more importance to stronger models.  
+
+---
+
+### 5. **Overfitting**:
+   - **Bagging**: Less prone to overfitting, as it focuses on reducing variance.  
+   - **Boosting**: More prone to overfitting, especially if the base models are too complex or iterations are too high.  
+
+---
+
+### 6. **Performance**:
+   - **Bagging**: Works best with high-variance models (e.g., decision trees) by stabilizing predictions.  
+   - **Boosting**: Works well with weak learners (e.g., shallow trees), turning them into strong learners.  
+
+---
+
+### 7. **Examples**:
+   - **Bagging**: Random Forest, BaggingClassifier.  
+   - **Boosting**: AdaBoost, Gradient Boosting, XGBoost, CatBoost, LightGBM.  
+
+By balancing these differences, you can choose the appropriate method based on the problem's nature, model's bias/variance trade-off, and computational constraints.
 ----------------------------------------------------------------------------------------------------------------------------------------
 18- What are the assumptions of linear regression?
 ----------------------------------------------------------------------------------------------------------------------------------------
+Linear regression relies on several key assumptions to produce reliable and valid results. These assumptions are:
 
+### 1. **Linearity**  
+   - The relationship between the independent variables and the dependent variable is linear.  
+
+### 2. **Independence of Errors**  
+   - The residuals (errors) are independent of each other.  
+   - This is particularly important for time-series data, where residuals should not be correlated across time (checked using the Durbin-Watson test).  
+
+### 3. **Homoscedasticity**  
+   - The residuals have constant variance across all levels of the independent variables.  
+   - If the variance changes (heteroscedasticity), predictions might become unreliable.  
+
+### 4. **No Multicollinearity**  
+   - The independent variables should not be highly correlated with each other.  
+   - Multicollinearity can make it difficult to estimate the coefficients accurately.  
+
+### 5. **Normality of Errors**  
+   - The residuals are normally distributed.  
+   - This is especially important for hypothesis testing and constructing confidence intervals.  
+
+### 6. **No Measurement Error in Independent Variables**  
+   - The independent variables are measured without error.  
+
+### 7. **Correct Model Specification**  
+   - The model is correctly specified, with no omitted variables or unnecessary terms.  
+
+By checking these assumptions through diagnostic tests and visualizations (e.g., residual plots, variance inflation factor, Q-Q plots), you can validate the appropriateness of linear regression for your data.
 ----------------------------------------------------------------------------------------------------------------------------------------
 19- How do you measure the accuracy of a Clustering Algorithm?
 ----------------------------------------------------------------------------------------------------------------------------------------
