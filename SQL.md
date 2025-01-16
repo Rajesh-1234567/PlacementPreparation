@@ -1,4 +1,6 @@
 https://www.geeksforgeeks.org/sql-query-interview-questions/
+
+https://www.geeksforgeeks.org/mysql-interview-questions/?ref=lbp
 Here's a comprehensive breakdown of essential SQL topics, including brief explanations, code examples, and real-life applications:
 
 ---
