@@ -4,6 +4,7 @@ https://www.shiksha.com/online-courses/articles/networking-interview-questions-a
 vid - 
 1- https://www.youtube.com/watch?v=I43NnHTeACk
 2- https://www.youtube.com/watch?v=R6zjflp4z50
+3- https://www.youtube.com/watch?v=kDEX1HXybrU
 
 ---
 
