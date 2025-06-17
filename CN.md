@@ -5,6 +5,9 @@ vid -
 1- https://www.youtube.com/watch?v=I43NnHTeACk
 2- https://www.youtube.com/watch?v=R6zjflp4z50
 3- https://www.youtube.com/watch?v=kDEX1HXybrU
+4- https://www.youtube.com/watch?v=dqlzQXo1wqo
+5- https://www.youtube.com/watch?v=LGz0Io_dh_I
+6- https://www.youtube.com/watch?v=UjCDWCeHCzY
 
 ---
 
