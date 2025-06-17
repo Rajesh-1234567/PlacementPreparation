@@ -1,6 +1,9 @@
 Here's a comprehensive overview of key concepts in **Computer Networks**, along with explanations, real-life examples, and simple code snippets where applicable:
 https://www.shiksha.com/online-courses/articles/networking-interview-questions-answers/
 
+vid - 
+1- https://www.youtube.com/watch?v=I43NnHTeACk
+
 ---
 
 ### **1. Basics of Computer Networks**
