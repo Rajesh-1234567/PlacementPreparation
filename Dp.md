@@ -1676,18 +1676,329 @@ class Solution {
     }
 }
 
------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------
+45- https://leetcode.com/problems/smallest-sufficient-team/
+------------------------------------
+import java.util.*;
 
-------------------------------------------------------------------------------------------------------------------------------------------------------
+class Solution {
+    int m, n;
+    int targetMask;
+    List<Integer> result = new ArrayList<>();
+    Map<String, Integer> dp = new HashMap<>();
+
+    private void solve(List<Integer> peopleSkill, int idx, List<Integer> temp, int mask) {
+        if (idx == peopleSkill.size()) {
+            if (mask == targetMask) {
+                if (result.isEmpty() || result.size() >= temp.size()) {
+                    result = new ArrayList<>(temp);
+                }
+            }
+            return;
+        }
+
+        String key = idx + "|" + mask;
+
+        if (dp.containsKey(key)) {
+            if (dp.get(key) <= temp.size())
+                return;
+        }
+
+        if (!result.isEmpty() && temp.size() >= result.size())
+            return;
+
+        // Case 1: Skip this person
+        solve(peopleSkill, idx + 1, temp, mask);
+
+        // Case 2: Take this person (only if they add new skills)
+        if ((mask | peopleSkill.get(idx)) != mask) {
+            temp.add(idx);
+            solve(peopleSkill, idx + 1, temp, mask | peopleSkill.get(idx));
+            temp.remove(temp.size() - 1);
+
+            dp.put(key, temp.isEmpty() ? -1 : temp.size());
+        }
+    }
+
+    public int[] smallestSufficientTeam(String[] req_skills, List<List<String>> people) {
+        n = req_skills.length;
+        m = people.size();
+
+        Map<String, Integer> skills = new HashMap<>();
+        for (int i = 0; i < n; i++) {
+            skills.put(req_skills[i], i);
+        }
+
+        // Represent each person by a bitmask
+        List<Integer> peopleSkill = new ArrayList<>();
+        for (List<String> v : people) {
+            int skillBit = 0;
+            for (String skill : v) {
+                skillBit |= 1 << skills.get(skill);
+            }
+            peopleSkill.add(skillBit);
+        }
+
+        targetMask = (1 << n) - 1;
+
+        solve(peopleSkill, 0, new ArrayList<>(), 0);
+
+        // Convert result list to array
+        int[] ans = new int[result.size()];
+        for (int i = 0; i < result.size(); i++) {
+            ans[i] = result.get(i);
+        }
+        return ans;
+    }
+}
+
+-------------------------------------------------------------------------------------------------
+46- https://leetcode.com/problems/number-of-longest-increasing-subsequence/
+-----------------------------------------------------
+import java.util.*;
+
+class Solution {
+    public int findNumberOfLIS(int[] nums) {
+        int n = nums.length;
+
+        int[] t = new int[n];       // LIS length ending at i
+        int[] count = new int[n];   // count of LIS ending at i
+
+        Arrays.fill(t, 1);
+        Arrays.fill(count, 1);
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < i; j++) {
+                if (nums[j] < nums[i]) {
+                    if (t[i] == t[j] + 1) {
+                        count[i] += count[j];
+                    } else if (t[i] < t[j] + 1) {
+                        t[i] = t[j] + 1;
+                        count[i] = count[j];
+                    }
+                }
+            }
+        }
+
+        int maxVal = 0;
+        for (int len : t) {
+            maxVal = Math.max(maxVal, len);
+        }
+
+        int result = 0;
+        for (int i = 0; i < n; i++) {
+            if (t[i] == maxVal) {
+                result += count[i];
+            }
+        }
+
+        return result;
+    }
+}
 
 
------------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+47- https://leetcode.com/problems/knight-probability-in-chessboard/description/
+---------------------------------------------------------------
+import java.util.*;
 
-------------------------------------------------------------------------------------------------------------------------------------------------------
+class Solution {
+    Map<String, Double> memo = new HashMap<>();
+    int[][] directions = {
+        {1, 2}, {1, -2}, {-1, 2}, {-1, -2},
+        {2, 1}, {2, -1}, {-2, 1}, {-2, -1}
+    };
 
------------------------------------------------------------------------------------------------------------------------------------------------------
+    private double helper(int N, int K, int row, int col) {
+        // Out of board
+        if (row < 0 || row >= N || col < 0 || col >= N) {
+            return 0.0;
+        }
 
-------------------------------------------------------------------------------------------------------------------------------------------------------
+        // If no more moves left, valid possibility
+        if (K == 0) {
+            return 1.0;
+        }
+
+        String key = K + "_" + row + "_" + col;
+
+        if (memo.containsKey(key)) {
+            return memo.get(key);
+        }
+
+        double ans = 0.0;
+        for (int[] dir : directions) {
+            int newRow = row + dir[0];
+            int newCol = col + dir[1];
+            ans += helper(N, K - 1, newRow, newCol);
+        }
+
+        double prob = ans / 8.0;
+        memo.put(key, prob);
+        return prob;
+    }
+
+    public double knightProbability(int n, int k, int row, int column) {
+        return helper(n, k, row, column);
+    }
+}
+
+--------------------------------------------------------------------------------------
+48- https://leetcode.com/problems/all-possible-full-binary-trees/description/
+----------------------------------------------------------------
+import java.util.*;
+
+// Definition for a binary tree node.
+class TreeNode {
+    int val;
+    TreeNode left;
+    TreeNode right;
+    TreeNode() {}
+    TreeNode(int val) { this.val = val; }
+    TreeNode(int val, TreeNode left, TreeNode right) {
+        this.val = val;
+        this.left = left;
+        this.right = right;
+    }
+}
+
+class Solution {
+    Map<Integer, List<TreeNode>> memo = new HashMap<>();
+
+    private List<TreeNode> solve(int n) {
+        // Full Binary Trees are possible only with odd number of nodes
+        if (n % 2 == 0) return new ArrayList<>();
+
+        // Base case - only 1 node
+        if (n == 1) {
+            List<TreeNode> base = new ArrayList<>();
+            base.add(new TreeNode(0));
+            return base;
+        }
+
+        if (memo.containsKey(n)) {
+            return memo.get(n);
+        }
+
+        List<TreeNode> result = new ArrayList<>();
+
+        // Divide nodes between left and right subtrees
+        for (int i = 1; i < n; i += 2) {
+            List<TreeNode> leftTrees = allPossibleFBT(i);
+            List<TreeNode> rightTrees = allPossibleFBT(n - i - 1);
+
+            for (TreeNode left : leftTrees) {
+                for (TreeNode right : rightTrees) {
+                    TreeNode root = new TreeNode(0);
+                    root.left = left;
+                    root.right = right;
+                    result.add(root);
+                }
+            }
+        }
+
+        memo.put(n, result);
+        return result;
+    }
+
+    public List<TreeNode> allPossibleFBT(int n) {
+        return solve(n);
+    }
+}
+
+----------------------------------------------------------------------
+49- https://leetcode.com/problems/predict-the-winner/
+-------------------------------------------------------------------------------
+class Solution {
+    int[][] dp;
+    int n;
+
+    private int solve(int[] nums, int l, int r) {
+        if (l > r) {
+            return 0;
+        }
+
+        if (l == r) {
+            return nums[l];
+        }
+
+        if (dp[l][r] != -1) {
+            return dp[l][r];
+        }
+// Expect the oponent should give you the. minimun
+        int takeLeft = nums[l] + Math.min(solve(nums, l + 2, r), 
+        solve(nums, l + 1, r - 1));
+        int takeRight = nums[r] + Math.min(solve(nums, l, r - 2), 
+        solve(nums, l + 1, r - 1));
+
+        return dp[l][r] = Math.max(takeLeft, takeRight);
+// But you always choose the maximum for you
+    }
+
+    public boolean predictTheWinner(int[] nums) {
+        n = nums.length;
+        dp = new int[n][n];
+        for (int[] row : dp) {
+            Arrays.fill(row, -1);
+        }
+
+        int total = 0;
+        for (int num : nums) {
+            total += num;
+        }
+
+        int player1 = solve(nums, 0, n - 1);
+        int player2 = total - player1;
+
+        return player1 >= player2;
+    }
+}
+
+-------------------------------------------------------------------------------------
+50- https://leetcode.com/problems/soup-servings/description/
+-----------------------------------------------------------------
+import java.util.*;
+
+class Solution {
+    // All possible serving operations
+    int[][] serves = {
+        {100, 0}, {75, 25}, {50, 50}, {25, 75}
+    };
+
+    double[][] dp;
+
+    private double solve(int A, int B) {
+        if (A <= 0 && B <= 0) return 0.5;
+        if (A <= 0) return 1.0;
+        if (B <= 0) return 0.0;
+
+        if (dp[A][B] != -1.0) {
+            return dp[A][B];
+        }
+
+        double probability = 0.0;
+
+        for (int[] s : serves) {
+            int Aserve = s[0];
+            int Bserve = s[1];
+            probability += 0.25 * solve(A - Aserve, B - Bserve);
+        }
+
+        return dp[A][B] = probability;
+    }
+
+    public double soupServings(int n) {
+        // Trick: when n is very large, probability ~ 1.0
+        if (n >= 5000) return 1.0;
+
+        dp = new double[n + 1][n + 1];
+        for (int i = 0; i <= n; i++) {
+            Arrays.fill(dp[i], -1.0);
+        }
+
+        return solve(n, n);
+    }
+}
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 
