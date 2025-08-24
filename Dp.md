@@ -2000,13 +2000,198 @@ class Solution {
     }
 }
 
------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------
+51- https://leetcode.com/problems/strange-printer/
+------------------------------------------------------------------------------
+/*
+    MY YOUTUBE VIDEO ON THIS Qn : https://www.youtube.com/watch?v=pV3arpA0TzY
+    Company Tags                : NetEase
+    Leetcode Link               : https://leetcode.com/problems/strange-printer/
+*/
 
-------------------------------------------------------------------------------------------------------------------------------------------------------
+class Solution {
+    int[][] t;
+    int n;
+    
+    public int strangePrinter(String s) {
+        n = s.length();
+        t = new int[n][n];
+        
+        for (int i = 0; i < n; i++) {
+            Arrays.fill(t[i], -1);
+        }
+        
+        return solve(0, n - 1, s);
+    }
+    
+    private int solve(int l, int r, String s) {
+        if (l == r)
+            return 1;
+        
+        if (l > r)
+            return 0;
+        
+        if (t[l][r] != -1)
+            return t[l][r];
+        
+        int i = l + 1;
+        while (i <= r && s.charAt(i) == s.charAt(l)) {
+            i++;
+        }
+        
+        if (i == r + 1)
+            return 1;
+        
+        int normal = 1 + solve(i, r, s);
+        
+        int optimized = Integer.MAX_VALUE;
+        for (int j = i; j <= r; j++) {
+            if (s.charAt(l) == s.charAt(j)) {
+                int x = solve(i, j - 1, s) + solve(j, r, s);
+                optimized = Math.min(optimized, x);
+            }
+        }
+        
+        return t[l][r] = Math.min(optimized, normal);
+    }
+}
 
------------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+52- https://leetcode.com/problems/minimum-ascii-delete-sum-for-two-strings/description/
+----------------------------------------------------------------------
+/*
+      MY YOUTUBE VIDEO ON THIS Qn : https://www.youtube.com/watch?v=Hstr9Wpa5Sc
+      Company Tags                : TripleByte
+      Leetcode Link               : https://leetcode.com/problems/minimum-ascii-delete-sum-for-two-strings/
+      Similar Qns                 : Edit Distance - https://leetcode.com/problems/edit-distance/
+                                    Delete Operation for Two Strings - https://leetcode.com/problems/delete-operation-for-two-strings/
+*/
 
-------------------------------------------------------------------------------------------------------------------------------------------------------
+class Solution {
+    int[][] t;
+    int m, n;
+    
+    public int minimumDeleteSum(String s1, String s2) {
+        m = s1.length();
+        n = s2.length();
+        
+        t = new int[m + 1][n + 1];
+        for (int i = 0; i <= m; i++) {
+            Arrays.fill(t[i], -1);
+        }
+        
+        return solve(s1, s2, 0, 0);
+    }
+    
+    private int solve(String s1, String s2, int i, int j) {
+        if (i >= m && j >= n) {
+            return 0;
+        }
+        
+        if (t[i][j] != -1) {
+            return t[i][j];
+        }
+        
+        if (i >= m) {
+            return t[i][j] = s2.charAt(j) + solve(s1, s2, i, j + 1);
+        } else if (j >= n) {
+            return t[i][j] = s1.charAt(i) + solve(s1, s2, i + 1, j);
+        }
+        
+        if (s1.charAt(i) == s2.charAt(j)) {
+            return t[i][j] = solve(s1, s2, i + 1, j + 1);
+        }
+        
+        int takeS1 = s1.charAt(i) + solve(s1, s2, i + 1, j);
+        int takeS2 = s2.charAt(j) + solve(s1, s2, i, j + 1);
+        
+        return t[i][j] = Math.min(takeS1, takeS2);
+    }
+}
+
+----------------------------------------------------------------------------------------
+53- https://leetcode.com/problems/word-break/description/
+-------------------------------------------------------------
+class Solution {
+    private Boolean[] t;
+    int n;
+    public boolean wordBreak(String s, List<String> wordDict) {
+        n = s.length();
+        t = new Boolean[s.length()];
+        return solve(s, 0, wordDict);
+    }
+    
+    private boolean solve(String s, int idx, List<String> wordDict) {
+        if (idx == n) {
+            return true;
+        }
+        
+        if (t[idx] != null) {
+            return t[idx];
+        }
+        
+        for (int endIdx = idx + 1; endIdx <= n; endIdx++) {
+            
+            String split = s.substring(idx, endIdx);
+            
+            if (wordDict.contains(split) && solve(s, endIdx, wordDict)) {
+                return t[idx] = true;
+            }
+        }
+        
+        return t[idx] = false;
+    }
+}
+
+
+--------------------------------------------------------------------------------------------
+https://leetcode.com/problems/unique-binary-search-trees-ii/description/
+----------------------------------------------------------
+/*
+      MY YOUTUBE VIDEO ON THIS Qn : https://www.youtube.com/watch?v=SXU--MPoUe8
+      Company Tags                : AMAZON
+      Leetcode Link               : https://leetcode.com/problems/unique-binary-search-trees-ii/
+*/
+
+class Solution {
+    private Map<String, List<TreeNode>> memo;
+
+    private List<TreeNode> allPossibleBST(int start, int end) {
+        List<TreeNode> res = new ArrayList<>();
+        
+        if (start > end) {
+            res.add(null);
+            return res;
+        }
+        
+        String key = start + "," + end;
+        if (memo.containsKey(key)) {
+            return memo.get(key);
+        }
+        
+        for (int i = start; i <= end; i++) {
+            List<TreeNode> leftSubTrees = allPossibleBST(start, i - 1);
+            List<TreeNode> rightSubTrees = allPossibleBST(i + 1, end);
+
+            for (TreeNode left : leftSubTrees) {
+                for (TreeNode right : rightSubTrees) {
+                    TreeNode root = new TreeNode(i);
+                    root.left = left;
+                    root.right = right;
+                    res.add(root);
+                }
+            }
+        }
+        
+        memo.put(key, res);
+        return res;
+    }
+
+    public List<TreeNode> generateTrees(int n) {
+        memo = new HashMap<>();
+        return allPossibleBST(1, n);
+    }
+}
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------
 
