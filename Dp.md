@@ -2145,7 +2145,7 @@ class Solution {
 
 
 --------------------------------------------------------------------------------------------
-https://leetcode.com/problems/unique-binary-search-trees-ii/description/
+54- https://leetcode.com/problems/unique-binary-search-trees-ii/description/
 ----------------------------------------------------------
 /*
       MY YOUTUBE VIDEO ON THIS Qn : https://www.youtube.com/watch?v=SXU--MPoUe8
@@ -2193,14 +2193,196 @@ class Solution {
     }
 }
 
------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------
+https://leetcode.com/problems/coin-change-ii/description/
+--------------------------------------------------
+class Solution {
+    public int change(int amount, int[] coins) {
+        int n = coins.length;
+        int dp[][] = new int[n][amount+1];
+        for(int row[]:dp) Arrays.fill(row,-1);
+        return rec(coins,amount,n-1,dp);
+    }
+    public int rec(int []coins, int target, int ind, int [][]dp){
+        if(ind == 0) {
+            if(target % coins[0] == 0) return 1;
+            else return 0;
+        }
+        if(dp[ind][target] != -1) return dp[ind][target];
+        int notTake = rec(coins,target,ind-1,dp);
+        int take =0;
+        if(target>=coins[ind]){
+            take = rec(coins,target-coins[ind],ind,dp);
+        }
+        dp[ind][target] = take + notTake;
+        return dp[ind][target];
+    }
+}
+----------------------------------------------------------------------------------------
+https://leetcode.com/problems/unique-paths-ii/description/
+--------------------------------------------------------------
+class Solution {
+    public int uniquePathsWithObstacles(int[][] obstacleGrid) {
+         int[][] dp = new int[obstacleGrid.length][obstacleGrid[0].length];
+        for (int i = 0; i < obstacleGrid.length; i++) {
+            for (int j = 0; j < obstacleGrid[0].length; j++) {
+                dp[i][j] = -1;
+            }
+        }
+        return find(obstacleGrid.length - 1, obstacleGrid[0].length - 1,obstacleGrid,dp);
+    }
 
-------------------------------------------------------------------------------------------------------------------------------------------------------
------------------------------------------------------------------------------------------------------------------------------------------------------
+    public int find(int i, int j,int obstacleGrid[][],int [][]dp) {
+        if (i < 0 || j < 0 || obstacleGrid[i][j]==1 ) return 0;
+        if (i == 0 && j == 0) return 1;
+        if(dp[i][j] !=-1) return dp[i][j];
+        int left = find(i - 1, j,obstacleGrid,dp);
+        int up = find(i, j - 1,obstacleGrid,dp);
+        return  dp[i][j] = left + up;
+    }
+}
+------------------------------------------------------------------------------------------
+https://leetcode.com/problems/check-if-there-is-a-valid-partition-for-the-array/description/
+-----------------------------------------------------------
+class Solution {
+    int n;
+    Integer[] t; // Use Integer array for memoization
 
-------------------------------------------------------------------------------------------------------------------------------------------------------
+    private boolean solve(int[] nums, int i) {
+        if (i >= n) return true;
+        if (t[i] != null) return t[i] == 1;
 
------------------------------------------------------------------------------------------------------------------------------------------------------
+        boolean result = false;
+
+        // Case 1: two equal numbers
+        if (i + 1 < n && nums[i] == nums[i + 1]) {
+            result |= solve(nums, i + 2);
+        }
+
+        // Case 2: three equal numbers
+        if (i + 2 < n && nums[i] == nums[i + 1] && nums[i + 1] == nums[i + 2]) {
+            result |= solve(nums, i + 3);
+        }
+
+        // Case 3: consecutive increasing numbers
+        if (i + 2 < n && nums[i + 1] - nums[i] == 1 && nums[i + 2] - nums[i + 1] == 1) {
+            result |= solve(nums, i + 3);
+        }
+
+        t[i] = result ? 1 : 0;
+        return result;
+    }
+
+    public boolean validPartition(int[] nums) {
+        n = nums.length;
+        t = new Integer[n]; // null = uncomputed
+        return solve(nums, 0);
+    }
+}
+
+-------------------------------------------------------------------------------------------
+https://leetcode.com/problems/interleaving-string/description/
+-----------------------------------------------------------
+class Solution {
+    int m, n, N;
+    Boolean dp[][];
+    boolean check(String s1, String s2, String s3, int i, int j) {
+        if(i >= m && j >= n && i+j >= N) 
+            return true;
+        
+        if(i+j >= N) 
+            return false;
+
+        if(dp[i][j] != null)
+            return dp[i][j];
+
+        boolean result = false;
+
+        if(i < m && s1.charAt(i) == s3.charAt(i+j)){
+            result = check(s1, s2, s3, i+1, j);
+        }
+
+        if(result == true){
+            return dp[i][j] = result;
+        }
+
+        if(j < n && s2.charAt(j) == s3.charAt(i+j)){
+            result = check(s1, s2, s3, i, j+1);
+        }
+        return dp[i][j] = result;
+    }
+
+    public boolean isInterleave(String s1, String s2, String s3) {
+        m = s1.length();
+        n = s2.length();
+        N = s3.length();
+
+        if(m + n != N)
+            return false;
+
+        dp = new Boolean[m+1][n+1];
+        return check(s1, s2, s3, 0, 0);
+
+    }
+}
+------------------------------------------------------------------------------
+https://leetcode.com/problems/frog-jump/description/
+-----------------------------------------------------------------------
+import java.util.*;
+
+class Solution {
+    private int n;
+    private Map<Integer, Integer> stoneIndexMap;
+    private Boolean[][] memo;
+
+    public boolean canCross(int[] stones) {
+        n = stones.length;
+
+        if (stones[1] != 1) return false;
+
+        stoneIndexMap = new HashMap<>();
+        for (int i = 0; i < n; i++) {
+            stoneIndexMap.put(stones[i], i);
+        }
+
+        memo = new Boolean[n][n + 1]; // prevJump can be at most n
+
+        return dfs(stones, 0, 0);
+    }
+
+    private boolean dfs(int[] stones, int currIndex, int prevJump) {
+        if (currIndex == n - 1) return true;
+
+        if (memo[currIndex][prevJump] != null) return memo[currIndex][prevJump];
+
+        boolean canReach = false;
+
+        // Jump of prevJump - 1
+        if (prevJump - 1 > 0) {
+            int nextPos = stones[currIndex] + (prevJump - 1);
+            if (stoneIndexMap.containsKey(nextPos)) {
+                canReach |= dfs(stones, stoneIndexMap.get(nextPos), prevJump - 1);
+            }
+        }
+
+        // Jump of prevJump
+        if (prevJump > 0) {
+            int nextPos = stones[currIndex] + prevJump;
+            if (stoneIndexMap.containsKey(nextPos)) {
+                canReach |= dfs(stones, stoneIndexMap.get(nextPos), prevJump);
+            }
+        }
+
+        // Jump of prevJump + 1
+        int nextPos = stones[currIndex] + (prevJump + 1);
+        if (stoneIndexMap.containsKey(nextPos)) {
+            canReach |= dfs(stones, stoneIndexMap.get(nextPos), prevJump + 1);
+        }
+
+        memo[currIndex][prevJump] = canReach;
+        return canReach;
+    }
+}
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 
