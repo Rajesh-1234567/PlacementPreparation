@@ -2384,24 +2384,624 @@ class Solution {
     }
 }
 
-------------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------
+https://leetcode.com/problems/minimum-number-of-taps-to-open-to-water-a-garden/
+------------------------------------------------------------
+class Solution {
+    public int minTaps(int n, int[] ranges) {
+        int[] dp = new int[n + 1];
+        Arrays.fill(dp, -1); // memo array
+        int ans = f(0, n, ranges, dp);
+        return ans >= 1_000_000 ? -1 : ans; // if impossible
+    }
 
------------------------------------------------------------------------------------------------------------------------------------------------------
+    private int f(int ind, int n, int[] arr, int[] dp) {
+        if (ind >= n) return 0; // already covered
+        if (dp[ind] != -1) return dp[ind];
 
-------------------------------------------------------------------------------------------------------------------------------------------------------
+        int ans = 1_000_000; // large number
+        for (int i = 0; i <= n; i++) {
+            int left = Math.max(0, i - arr[i]);
+            int right = i + arr[i];
+            if (left <= ind && right > ind) {
+                ans = Math.min(ans, 1 + f(right, n, arr, dp));
+            }
+        }
 
------------------------------------------------------------------------------------------------------------------------------------------------------
+        dp[ind] = ans;
+        return ans;
+    }
+}
 
-------------------------------------------------------------------------------------------------------------------------------------------------------
------------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------
+https://leetcode.com/problems/extra-characters-in-a-string/description/?envType=daily-question&envId=2023-09-02
+-------------------------------------------------------------
+class Solution {
+    int[] t = new int[51];
+    public int solve(int i, String s, Set<String> st, int n) {
+        if (i >= n) {
+            return 0;
+        }
 
-------------------------------------------------------------------------------------------------------------------------------------------------------
------------------------------------------------------------------------------------------------------------------------------------------------------
+        if (t[i] != -1) {
+            return t[i];
+        }
 
-------------------------------------------------------------------------------------------------------------------------------------------------------
------------------------------------------------------------------------------------------------------------------------------------------------------
+        int result = 1 + solve(i + 1, s, st, n); // skipping the ith character
 
-------------------------------------------------------------------------------------------------------------------------------------------------------
------------------------------------------------------------------------------------------------------------------------------------------------------
+        for (int j = i; j < n; j++) {
+            String curr = s.substring(i, j + 1);
+            if (st.contains(curr)) {
+                // valid substring
+                result = Math.min(result, solve(j + 1, s, st, n));
+            }
+        }
 
-------------------------------------------------------------------------------------------------------------------------------------------------------
+        return t[i] = result;
+    }
+    public int minExtraChar(String s, String[] dictionary) {
+        int n = s.length();
+        Arrays.fill(t, -1);
+        Set<String> st = new HashSet<>(Arrays.asList(dictionary));
+
+        return solve(0, s, st, n);
+        
+    }
+}
+----------------------------------------------------------------------------------------
+https://leetcode.com/problems/unique-paths/
+--------------------------------------------------------------
+class Solution {
+    public int solve(int i, int j, int m, int n, int[][] t) {
+        // Base case: Reached the bottom-right cell
+        if (i == m - 1 && j == n - 1) {
+            return 1;
+        }
+
+        // Out of bounds
+        if (i < 0 || i >= m || j < 0 || j >= n) {
+            return 0;
+        }
+
+        // If already computed, return the stored result
+        if (t[i][j] != -1) {
+            return t[i][j];
+        }
+
+        // Calculate the number of paths by going right and down
+        int right = solve(i, j + 1, m, n, t);
+        int down = solve(i + 1, j, m, n, t);
+
+        // Store the result in the memoization table
+        return t[i][j] = right + down;
+    }
+
+    public int uniquePaths(int m, int n) {
+        // Create a memoization table initialized with -1
+        int[][] t = new int[m][n];
+        for (int[] row : t) {
+            Arrays.fill(row, -1);
+        }
+
+        // Start the recursive computation from the top-left cell
+        return solve(0, 0, m, n, t);
+    }
+}
+--------------------------------------------------------------------------------------------
+https://leetcode.com/problems/champagne-tower/description/
+---------------------------------------------------------
+public class Solution {
+    double[][] t = new double[101][101];
+
+    public double solve(int poured, int i, int j) {
+        if (i < 0 || j > i || j < 0) {
+            return 0.0;
+        }
+
+        if (i == 0 && j == 0) {
+            return t[i][j] = poured;
+        }
+
+        if (t[i][j] != -1) {
+            return t[i][j];
+        }
+
+        double up_left = (solve(poured, i - 1, j - 1) - 1) / 2.0;
+        double up_right = (solve(poured, i - 1, j) - 1) / 2.0;
+
+        if (up_left < 0) {
+            up_left = 0.0;
+        }
+
+        if (up_right < 0) {
+            up_right = 0.0;
+        }
+
+        return t[i][j] = up_left + up_right;
+    }
+
+    public double champagneTower(int poured, int query_row, int query_glass) {
+        for (int i = 0; i < 101; i++) {
+            for (int j = 0; j < 101; j++) {
+                t[i][j] = -1;
+            }
+        }
+
+        return Math.min(1.0, solve(poured, query_row, query_glass));
+    }
+}
+
+----------------------------------------------------------------------------
+https://leetcode.com/problems/integer-break/description/
+--------------------------------------------------------------------------
+class Solution {
+    int[] t = new int[59];
+
+    public int solve(int n) {
+        if (n == 1)
+            return 1;
+
+        if (t[n] != -1)
+            return t[n];
+
+        int result = Integer.MIN_VALUE;
+
+        for (int i = 1; i < n; i++) {
+            int prod = i * Math.max(n - i, solve(n - i));
+            result = Math.max(result, prod);
+        }
+
+        return t[n] = result;
+    }
+
+    public int integerBreak(int n) {
+        Arrays.fill(t, -1);
+        return solve(n);
+    }
+}
+
+--------------------------------------------------------------------------------------------
+https://leetcode.com/problems/max-dot-product-of-two-subsequences/description/
+---------------------------------------------------------
+class Solution {
+    int m, n;
+    int[][] t;
+
+    public int maxDotProduct(int[] nums1, int[] nums2) {
+        m = nums1.length;
+        n = nums2.length;
+        t = new int[501][501];
+
+        for (int i = 0; i < 501; i++) {
+            Arrays.fill(t[i], -100000000);
+        }
+
+        return solve(nums1, nums2, 0, 0);
+    }
+
+    public int solve(int[] nums1, int[] nums2, int i, int j) {
+        if (i == m || j == n)
+            return -100000000;
+
+        if (t[i][j] != -100000000)
+            return t[i][j];
+
+        int val = nums1[i] * nums2[j];
+
+        int skip_i_j = solve(nums1, nums2, i + 1, j + 1) + val;
+        int take_i = solve(nums1, nums2, i, j + 1);
+        int take_j = solve(nums1, nums2, i + 1, j);
+
+        t[i][j] = Math.max(val, Math.max(skip_i_j, Math.max(take_i, take_j)));
+        return t[i][j];
+    }
+}
+----------------------------------------------------------------------------------------------
+https://leetcode.com/problems/min-cost-climbing-stairs/
+--------------------------------------------------------
+class Solution {
+    int[]dp;
+    public int minCostClimbingStairs(int[] cost) {
+        int n= cost.length;
+        dp = new int[n];
+        return Math.min(minCost(cost,n-1),minCost(cost,n-2));
+    }
+    public int minCost(int[]cost,int n){
+        if(n<0) return 0;
+        if(n==0 || n==1) return cost[n];
+        if(dp[n]!=0) return dp[n];
+        dp[n]= cost[n]+Math.min(minCost(cost,n-1),minCost(cost,n-2));
+        return dp[n];
+    }
+}
+-------------------------------------------------------------------------------------
+https://leetcode.com/problems/painting-the-walls/description/
+----------------------------------------------------------------
+public class Solution {
+    int n;
+    int[][] t;
+
+    public int solve(int idx, int remaining, int[] cost, int[] time) {
+
+        if (remaining <= 0)
+            return 0;
+
+        if (idx == n) {
+            return 1000000000;
+        }
+
+        if (t[idx][remaining] != -1) {
+            return t[idx][remaining];
+        }
+
+        int paint_i = cost[idx] + solve(idx + 1, remaining - 1 - time[idx], cost, time);
+        int not_paint_i = solve(idx + 1, remaining, cost, time);
+
+        return t[idx][remaining] = Math.min(paint_i, not_paint_i);
+    }
+
+    public int paintWalls(int[] cost, int[] time) {
+        n = cost.length;
+        t = new int[501][501];
+        for (int[] row : t) {
+            Arrays.fill(row, -1);
+        }
+
+        return solve(0, n, cost, time);
+    }
+}
+
+----------------------------------------------------------------------------------------
+https://leetcode.com/problems/number-of-ways-to-stay-in-the-same-place-after-some-steps/description/
+--------------------------------------------------------------
+public class Solution {
+    private int n;
+    private int[][] t;
+    private final int MOD = 1000000007; // Equivalent to 1e9+7 in C++
+
+    public int numWays(int steps, int arrLen) {
+       /*
+        Note that furthest we can go is by only making moves to the right, 
+        but we can go to right by "steps" moves. 
+        Thus, we can do, arrLen = min(arrLen, steps)
+        */
+        arrLen = Math.min(arrLen, steps);
+
+        /*
+            Also if you notice, you can only move away from 0 in the array by at max steps/2 to come back to 0
+            So, we can also do
+            arrLen = Math.min(arrLen, (steps+1)/2); //(steps+1)/2 takes care of Odd case as well.
+        */
+            
+        n = arrLen;
+        t = new int[501][501];
+        for (int i = 0; i < 501; i++) {
+            Arrays.fill(t[i], -1);
+        }
+        return solve(0, steps);
+    }
+
+    private int solve(int idx, int steps) {
+        if (idx < 0 || idx >= n) {
+            return 0;
+        }
+
+        if (steps == 0) {
+            return idx == 0 ? 1 : 0;
+        }
+
+        if (t[idx][steps] != -1) {
+            return t[idx][steps];
+        }
+
+        int result = solve(idx + 1, steps - 1) % MOD; // RIGHT
+        result = (result + solve(idx - 1, steps - 1)) % MOD; // LEFT
+        result = (result + solve(idx, steps - 1)) % MOD; // STAY
+
+        t[idx][steps] = result;
+        return result;
+    }
+}
+
+--------------------------------------------------------------------------------------
+https://leetcode.com/problems/constrained-subsequence-sum/description/
+---------------------------------------------------------------
+class Solution {
+    int n, k;
+    Map<String, Integer> mp = new HashMap<>();
+
+    public int solve(int[] nums, int lastChosenIndex, int currIndex) {
+        if (currIndex >= n)
+            return 0;
+
+        String key = lastChosenIndex + "_" + currIndex;
+
+        if (mp.containsKey(key))
+            return mp.get(key);
+
+        int result = 0;
+
+        if (lastChosenIndex == -1 || currIndex - lastChosenIndex <= k) {
+            // take current element
+            int taken = nums[currIndex] + solve(nums, currIndex, currIndex + 1);
+
+            // don't take current element
+            int notTaken = solve(nums, -1, currIndex + 1);
+
+            result = Math.max(taken, notTaken);
+        }
+
+        mp.put(key, result);
+        return result;
+    }
+
+    public int constrainedSubsetSum(int[] nums, int k) {
+        this.n = nums.length;
+        this.k = k;
+        mp.clear();
+
+        int val = solve(nums, -1, 0);
+        return val == 0 ? -1 : val;
+    }
+}
+
+----------------------------------------------------------------------------------------
+https://leetcode.com/problems/longest-palindromic-substring/
+--------------------------------------------------------------
+class Solution {
+    int[][] t;
+
+    public boolean solve(String s, int l, int r) {
+        if (l >= r)
+            return true;
+
+        if (t[l][r] != -1)
+            return t[l][r] == 1;
+
+        if (s.charAt(l) == s.charAt(r)) {
+            t[l][r] = solve(s, l + 1, r - 1) ? 1 : 0;
+            return t[l][r] == 1;
+        }
+
+        t[l][r] = 0;
+        return false;
+    }
+
+    public String longestPalindrome(String s) {
+        int n = s.length();
+        t = new int[n][n];
+
+        // initialize with -1
+        for (int i = 0; i < n; i++) {
+            Arrays.fill(t[i], -1);
+        }
+
+        int maxLen = Integer.MIN_VALUE;
+        int startingIndex = 0;
+
+        for (int i = 0; i < n; i++) {
+            for (int j = i; j < n; j++) {
+                if (solve(s, i, j)) {
+                    if (j - i + 1 > maxLen) {
+                        startingIndex = i;
+                        maxLen = j - i + 1;
+                    }
+                }
+            }
+        }
+
+        return s.substring(startingIndex, startingIndex + maxLen);
+    }
+}
+
+
+-----------------------------------------------------------------------------------------
+https://leetcode.com/problems/maximum-points-after-collecting-coins-from-all-nodes/description/
+------------------------------------------------------------
+import java.util.*;
+
+class Solution {
+    int[][] dp;
+    int n, k;
+    int[] coins;
+    Map<Integer, List<Integer>> adj;
+
+    private int dfs(int i, int parent, int power) {
+        if (power >= 14) 
+            return 0;
+
+        if (dp[i][power] != -1) 
+            return dp[i][power];
+
+        int case1 = (coins[i] >> power) - k;
+        int case2 = (coins[i] >> (power + 1));
+
+        for (int j : adj.get(i)) {
+            if (j != parent) {
+                case1 += dfs(j, i, power);
+                case2 += dfs(j, i, power + 1);
+            }
+        }
+
+        return dp[i][power] = Math.max(case1, case2);
+    }
+
+    public int maximumPoints(int[][] edges, int[] coins, int k) {
+        this.n = coins.length;
+        this.k = k;
+        this.coins = coins;
+
+        dp = new int[n][15];  // power goes up to ~14
+        for (int i = 0; i < n; i++) {
+            Arrays.fill(dp[i], -1);
+        }
+
+        adj = new HashMap<>();
+        for (int i = 0; i < n; i++) adj.put(i, new ArrayList<>());
+
+        for (int[] e : edges) {
+            adj.get(e[0]).add(e[1]);
+            adj.get(e[1]).add(e[0]);
+        }
+
+        return dfs(0, -1, 0);
+    }
+}
+
+--------------------------------------------------------------------------------------
+https://leetcode.com/problems/knight-dialer/description/
+----------------------------------------------------------------
+import java.util.*;
+
+class Solution {
+    int M = (int)1e9 + 7;
+
+    // adjacency list for knight moves
+    int[][] adj = {
+        {4, 6},      // 0
+        {6, 8},      // 1
+        {7, 9},      // 2
+        {4, 8},      // 3
+        {3, 9, 0},   // 4
+        {},          // 5 (knight cannot go anywhere from 5)
+        {1, 7, 0},   // 6
+        {2, 6},      // 7
+        {1, 3},      // 8
+        {2, 4}       // 9
+    };
+
+    int[][] t;  // DP memo table
+
+    private int solve(int n, int cell) {
+        if (n == 0) {
+            return 1;
+        }
+
+        if (t[n][cell] != -1) {
+            return t[n][cell];
+        }
+
+        long result = 0;
+        for (int nextCell : adj[cell]) {
+            result = (result + solve(n - 1, nextCell)) % M;
+        }
+
+        return t[n][cell] = (int) result;
+    }
+
+    public int knightDialer(int n) {
+        t = new int[n][10];  // n steps, 10 digits
+        for (int i = 0; i < n; i++) {
+            Arrays.fill(t[i], -1);
+        }
+
+        long result = 0;
+        for (int cell = 0; cell <= 9; cell++) {
+            result = (result + solve(n - 1, cell)) % M;
+        }
+
+        return (int) result;
+    }
+}
+
+--------------------------------------------------------------------------------------
+https://leetcode.com/problems/decode-ways/
+----------------------------------------------------------------
+class Solution {
+    int[] dp;
+
+    private int solve(int i, String s, int n) {
+        if (dp[i] != -1) {
+            return dp[i];
+        }
+
+        if (i == n) {
+            return dp[i] = 1; // one valid split done
+        }
+
+        if (s.charAt(i) == '0') {
+            return dp[i] = 0; // not possible to split
+        }
+
+        int result = solve(i + 1, s, n);
+
+        if (i + 1 < n) {
+            if (s.charAt(i) == '1' || (s.charAt(i) == '2' && s.charAt(i + 1) <= '6')) {
+                result += solve(i + 2, s, n);
+            }
+        }
+
+        return dp[i] = result;
+    }
+
+    public int numDecodings(String s) {
+        int n = s.length();
+        dp = new int[n + 1];
+        Arrays.fill(dp, -1);
+
+        return solve(0, s, n);
+    }
+}
+
+--------------------------------------------------------------------------------------
+
+----------------------------------------------------------------
+
+--------------------------------------------------------------------------------------
+----------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------------
+----------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------------
+----------------------------------------------------------------
+
+--------------------------------------------------------------------------------------
+----------------------------------------------------------------
+
+--------------------------------------------------------------------------------------
+----------------------------------------------------------------
+
+--------------------------------------------------------------------------------------
+----------------------------------------------------------------
+
+--------------------------------------------------------------------------------------
+----------------------------------------------------------------
+
+--------------------------------------------------------------------------------------
+----------------------------------------------------------------
+
+--------------------------------------------------------------------------------------
+----------------------------------------------------------------
+
+--------------------------------------------------------------------------------------
+----------------------------------------------------------------
+
+--------------------------------------------------------------------------------------
+----------------------------------------------------------------
+
+--------------------------------------------------------------------------------------
+----------------------------------------------------------------
+
+--------------------------------------------------------------------------------------
+----------------------------------------------------------------
+
+--------------------------------------------------------------------------------------
+----------------------------------------------------------------
+
+--------------------------------------------------------------------------------------
+----------------------------------------------------------------
+
+--------------------------------------------------------------------------------------
+----------------------------------------------------------------
+
+--------------------------------------------------------------------------------------
+----------------------------------------------------------------
+
+--------------------------------------------------------------------------------------
+----------------------------------------------------------------
+
+--------------------------------------------------------------------------------------
+----------------------------------------------------------------
