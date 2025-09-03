@@ -2944,7 +2944,386 @@ class Solution {
 }
 
 --------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------
+https://leetcode.com/problems/number-of-dice-rolls-with-target-sum/
+-------------------------------------------------------------------------------------------------------------------------------------------
 
+class Solution {
+    private static final int M = (int)1e9 + 7;
+    private int[][] t;
+
+    private int solve(int n, int k, int target) {
+        if (target < 0 || n == 0) {
+            return target == 0 ? 1 : 0;
+        }
+
+        if (t[n][target] != -1) {
+            return t[n][target];
+        }
+
+        long sum = 0;
+
+        for (int i = 1; i <= k; i++) {
+            sum += solve(n - 1, k, target - i);
+            sum %= M;
+        }
+
+        return t[n][target] = (int) sum;
+    }
+
+    public int numRollsToTarget(int n, int k, int target) {
+        t = new int[n + 1][target + 1];
+        for (int i = 0; i <= n; i++) {
+            Arrays.fill(t[i], -1);
+        }
+        return solve(n, k, target);
+    }
+}
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+https://leetcode.com/problems/string-compression-ii/
+-------------------------------------------------------------------------------------------------------------------------------------------
+class Solution {
+    int n;
+    int[][] dp;
+
+    private int solve(int i, int k, String s) {
+        if (k < 0) {
+            return 100000; // large value = invalid
+        }
+
+        if (i >= n || (n - i) <= k) {
+            return 0;
+        }
+
+        if (dp[i][k] != -1) {
+            return dp[i][k];
+        }
+
+        // Option 1: delete current char
+        int delete_i = solve(i + 1, k - 1, s);
+
+        int keep_i = Integer.MAX_VALUE;
+        int deleted = 0, freq = 0, addition = 0;
+
+        for (int j = i; j < n && deleted <= k; j++) {
+            if (s.charAt(j) == s.charAt(i)) {
+                freq++;
+                if (freq == 2 || freq == 10 || freq == 100) {
+                    addition++;
+                }
+            } else {
+                deleted++;
+            }
+
+            keep_i = Math.min(keep_i, 1 + addition + solve(j + 1, k - deleted, s));
+        }
+
+        return dp[i][k] = Math.min(delete_i, keep_i);
+    }
+
+    public int getLengthOfOptimalCompression(String s, int k) {
+        n = s.length();
+        dp = new int[n + 1][k + 1];
+        for (int i = 0; i <= n; i++) {
+            Arrays.fill(dp[i], -1);
+        }
+        return solve(0, k, s);
+    }
+}
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+https://leetcode.com/problems/string-compression-ii/description/
+-------------------------------------------------------------------------------------------------------------------------------------------
+class Solution {
+    int n;
+    int[][] dp;
+
+    private int solve(int i, int k, String s) {
+        if (k < 0) {
+            return 100000; // large value = invalid
+        }
+
+        if (i >= n || (n - i) <= k) {
+            return 0;
+        }
+
+        if (dp[i][k] != -1) {
+            return dp[i][k];
+        }
+
+        // Option 1: delete current char
+        int delete_i = solve(i + 1, k - 1, s);
+
+        int keep_i = Integer.MAX_VALUE;
+        int deleted = 0, freq = 0, addition = 0;
+
+        for (int j = i; j < n && deleted <= k; j++) {
+            if (s.charAt(j) == s.charAt(i)) {
+                freq++;
+                if (freq == 2 || freq == 10 || freq == 100) {
+                    addition++;
+                }
+            } else {
+                deleted++;
+            }
+
+            keep_i = Math.min(keep_i, 1 + addition + solve(j + 1, k - deleted, s));
+        }
+
+        return dp[i][k] = Math.min(delete_i, keep_i);
+    }
+
+    public int getLengthOfOptimalCompression(String s, int k) {
+        n = s.length();
+        dp = new int[n + 1][k + 1];
+        for (int i = 0; i <= n; i++) {
+            Arrays.fill(dp[i], -1);
+        }
+        return solve(0, k, s);
+    }
+}
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+https://leetcode.com/problems/minimum-difficulty-of-a-job-schedule/
+-------------------------------------------------------------------------------------------------------------------------------------------
+class Solution {
+    public int minDifficulty(int[] dif, int d) {
+        int n = dif.length;
+        if(n<d ) return -1;
+        int dp[][]= new int [n+1][d+1];
+        for(int i=0;i<=n;i++) Arrays.fill(dp[i],-1);
+        return solve(dif,d,0,dp);
+    }
+    public int solve(int []dif, int days, int idx, int dp[][]){
+        if(days==1){
+            int max =0;
+            for(int i=idx;i<dif.length;i++) max =Math.max(max,dif[i]);
+            return max;
+        }
+        if(dp[idx][days]!= -1) return dp[idx][days];
+        int max =0;
+        int ans = Integer.MAX_VALUE;
+        for(int i =idx;i<=dif.length-days;i++){
+            max = Math.max(max,dif[i]);
+            ans = Math.min(ans,max + solve(dif,days-1,i+1,dp));
+        }
+        return dp[idx][days]=ans;
+    }
+}
+-------------------------------------------------------------------------------------------------------------------------------------------
+https://www.geeksforgeeks.org/problems/count-possible-ways-to-construct-buildings5007/1
+-------------------------------------------------------------------------------------------------------------------------------------------
+class Solution {
+    final int M = (int)1e9 + 7;
+    int[][] t;
+
+    int space = 0;
+    int building = 1;
+
+    int solve(int n, int status) {
+        if (n == 0) 
+            return 1; // all done, found one way
+        
+        if (t[n][status] != -1) 
+            return t[n][status];
+
+        if (status == building) {
+            return t[n][status] = solve(n - 1, space) % M;
+        } else {
+            return t[n][status] = (solve(n - 1, building) % M + solve(n - 1, space) % M) % M;
+        }
+    }
+
+    public int TotalWays(int N) {
+        t = new int[N + 1][2];
+        for (int i = 0; i <= N; i++) {
+            Arrays.fill(t[i], -1);
+        }
+
+        long x = (solve(N - 1, building) % M + solve(N - 1, space) % M) % M;
+        return (int)((x * x) % M);
+    }
+}
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+https://leetcode.com/problems/maximize-the-number-of-partitions-after-operations/
+-------------------------------------------------------------------------------------------------------------------------------------------
+public class Solution {
+    private Map<Long, Integer> mp = new HashMap<>();
+    private String S;
+    private int K;
+
+    public int solve(long i, long uniqueChars, boolean canChange) {
+        long key = (i << 27) | (uniqueChars << 1) | (canChange ? 1 : 0);
+
+        if (mp.containsKey(key)) {
+            return mp.get(key);
+        }
+
+        if (i == S.length()) {
+            return 0;
+        }
+
+        int characterIndex = S.charAt((int) i) - 'a';
+        long uniqueCharsUpdated = uniqueChars | (1L << characterIndex);
+        int uniqueCharCount = Long.bitCount(uniqueCharsUpdated);
+
+        int result;
+        if (uniqueCharCount > K) {
+            result = 1 + solve(i + 1, 1L << characterIndex, canChange);
+        } else {
+            result = solve(i + 1, uniqueCharsUpdated, canChange);
+        }
+
+        if (canChange) {
+            for (int newCharIndex = 0; newCharIndex < 26; ++newCharIndex) {
+                long newSet = uniqueChars | (1L << newCharIndex);
+                int newUniqueCharCount = Long.bitCount(newSet);
+
+                if (newUniqueCharCount > K) {
+                    result = Math.max(result, 1 + solve(i + 1, 1L << newCharIndex, false));
+                } else {
+                    result = Math.max(result, solve(i + 1, newSet, false));
+                }
+            }
+        }
+
+        mp.put(key, result);
+        return result;
+    }
+
+    public int maxPartitionsAfterOperations(String s, int k) {
+        S = s;
+        K = k;
+        return solve(0, 0, true) + 1;
+    }
+}
+-------------------------------------------------------------------------------------------------------------------------------------------
+https://leetcode.com/problems/out-of-boundary-paths/
+-------------------------------------------------------------------------------------------------------------------------------------------
+class Solution {
+    int M;
+    int N;
+    int MOD = 1000000007;
+    int[][][] t; // DP table
+    int[][] directions = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+
+    public int findPaths(int m, int n, int maxMove, int startRow, int startColumn) {
+        M = m;
+        N = n;
+        // Initialize DP array with -1
+        t = new int[maxMove + 1][M][N];
+        for (int i = 0; i <= maxMove; i++) {
+            for (int j = 0; j < M; j++) {
+                for (int k = 0; k < N; k++) {
+                    t[i][j][k] = -1;
+                }
+            }
+        }
+        return solve(maxMove, startRow, startColumn);
+    }
+
+    private int solve(int maxMove, int row, int col) {
+        // If out of grid → one valid path
+        if (row < 0 || row >= M || col < 0 || col >= N) {
+            return 1;
+        }
+        // If no moves left → no path
+        if (maxMove <= 0) {
+            return 0;
+        }
+        // Already computed → return stored result
+        if (t[maxMove][row][col] != -1) {
+            return t[maxMove][row][col];
+        }
+
+        long result = 0;
+        for (int[] dir : directions) {
+            int x = row + dir[0];
+            int y = col + dir[1];
+            result = (result + solve(maxMove - 1, x, y)) % MOD;
+        }
+
+        return t[maxMove][row][col] = (int) result;
+    }
+}
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+https://leetcode.com/problems/k-inverse-pairs-array/description/
+-------------------------------------------------------------------------------------------------------------------------------------------
+public class Solution {
+    final int M = 1000000007;
+    int[][] t = new int[1001][1001];
+
+    public int solve(int n, int k) {
+        if (n == 0)
+            return 0;
+
+        if (k == 0)
+            return 1;
+
+        if (t[n][k] != -1)
+            return t[n][k];
+
+        int totalInversions = 0;
+
+        // In an array of length n, we can't create inversions more than (n-1) -> min(n-1, k)
+        for (int i = 0; i <= Math.min(n - 1, k); i++) {
+            totalInversions = (int) ((totalInversions % M + kInversePairs(n - 1, k - i) % M) % M);
+        }
+
+        return t[n][k] = totalInversions;
+    }
+
+    public int kInversePairs(int n, int k) {
+        for (int i = 0; i < t.length; i++) {
+            Arrays.fill(t[i], -1);
+        }
+        return solve(n, k);
+    }
+}
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+https://www.geeksforgeeks.org/problems/count-digit-groupings-of-a-number1520/1
+-------------------------------------------------------------------------------------------------------------------------------------------
+class Solution
+{
+    private int n;
+    private int[][] t;
+
+    public int solve(int idx, int prev_sum, String str) {
+        if (idx >= n) {
+            return 1;
+        }
+
+        if (t[idx][prev_sum] != -1) {
+            return t[idx][prev_sum];
+        }
+
+        int result = 0;
+        int curr_sum = 0;
+        for (int i = idx; i < n; i++) {
+            curr_sum += (str.charAt(i) - '0');
+            if (prev_sum <= curr_sum) {
+                result += solve(i + 1, curr_sum, str);
+            }
+        }
+
+        return t[idx][prev_sum] = result;
+    }
+    
+    public int TotalCount(String str) {
+        n = str.length();
+        t = new int[101][10001];
+        for (int[] row : t) {
+            Arrays.fill(row, -1);
+        }
+
+        return solve(0, 0, str);
+    }
+}
 ----------------------------------------------------------------
 
 --------------------------------------------------------------------------------------
