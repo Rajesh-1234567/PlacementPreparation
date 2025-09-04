@@ -1,4 +1,8 @@
 https://docs.google.com/document/d/10XqvDZsXXqlpcgXS3kzkllNsZaPD11B_tr0mhN1DOcQ/edit?tab=t.0
+
+ML -   https://www.geeksforgeeks.org/machine-learning/machine-learning/
+DL/CV - https://www.geeksforgeeks.org/computer-vision/computer-vision/
+
 ----------------------------------------------------------------------------------------------------------------------------------------
 1- What is the difference between Parametric and Non Parametric Algorithms?
 ----------------------------------------------------------------------------------------------------------------------------------------
@@ -376,7 +380,247 @@ By checking these assumptions through diagnostic tests and visualizations (e.g.,
 ----------------------------------------------------------------------------------------------------------------------------------------
 19- How do you measure the accuracy of a Clustering Algorithm?
 ----------------------------------------------------------------------------------------------------------------------------------------
-
+We rely on internal metrics that evaluate cluster quality:
+Silhouette Coefficient (−1 to +1): Higher means better defined, well-separated clusters.
+Davies–Bouldin Index (lower = better): Measures average similarity between clusters.
+Dunn Index (higher = better): Ratio of inter-cluster to intra-cluster distance.
+Elbow Method (for k-means): Helps decide optimal number of clusters based on within-cluster variance.
 ----------------------------------------------------------------------------------------------------------------------------------------
 20- What is Matrix Factorization and where is it used in Machine Learning?
+----------------------------------------------------------------------------------------------------------------------------------------
+Nice one 👍 Matrix Factorization is a **core technique in Machine Learning**, especially in **recommendation systems**. Let’s break it down simply:
+
+---
+
+## 🔹 What is Matrix Factorization?
+
+Matrix Factorization means breaking a **large matrix** into the product of **smaller matrices** that capture hidden patterns (latent features).
+
+Mathematically:
+
+$$
+R \approx U \times V^T
+$$
+
+* $R$: Original matrix (e.g., user-item ratings matrix).
+* $U$: User feature matrix (latent representation of users).
+* $V$: Item feature matrix (latent representation of items). Mainly used in recomendation system.
+
+👉 Instead of directly storing user–item interactions, we represent users and items in a **lower-dimensional latent space**.
+
+---
+----------------------------------------------------------------------------------------------------------------------------------------
+21- What is an Imbalanced Dataset and how can one deal with this problem?
+----------------------------------------------------------------------------------------------------------------------------------------
+
+## 🔹 Imbalanced Dataset
+
+When one class has **many more samples** than the other (e.g., 99% normal, 1% fraud).
+👉 Problem: Model becomes biased toward the majority class.
+
+---
+
+## 🔹 How to Handle It
+
+1. **Data-Level (Resampling)**
+
+   * Oversample minority (e.g., **SMOTE**)
+   * Undersample majority
+
+2. **Algorithm-Level**
+
+   * Use **class weights / cost-sensitive learning**
+   * Apply ensemble methods (Balanced RF, SMOTEBoost)
+
+3. **Evaluation Metrics**
+
+   * Don’t use Accuracy → use **Precision, Recall, F1, ROC-AUC, PR-AUC**
+
+---
+
+✅ Example: Fraud detection → use **SMOTE + class weights** and measure **Recall/F1** instead of Accuracy.
+
+
+---
+
+## 🔹 SMOTE (Synthetic Minority Over-sampling Technique)
+
+* **What it is:** A technique to handle **imbalanced datasets** by generating **synthetic samples** for the minority class instead of just duplicating existing ones.
+
+---
+
+## 🔹 How it Works
+
+1. For each minority class sample, find its **k nearest neighbors** (default k=5).
+2. Randomly pick one neighbor.
+3. Create a new synthetic sample **along the line** between the two points.
+
+This increases minority class data → makes dataset more balanced.
+
+---
+
+## 🔹 Example
+
+Fraud dataset: 990 normal, 10 fraud.
+
+* After SMOTE: 990 normal, 990 synthetic+real fraud → balanced dataset.
+
+---
+----------------------------------------------------------------------------------------------------------------------------------------
+22- How do you measure the accuracy of a recommendation engine?
+----------------------------------------------------------------------------------------------------------------------------------------
+Great question 👌 Measuring the accuracy of a **recommendation engine** depends on the type of recommendation system (rating prediction vs top-N recommendation).
+
+---
+
+## 🔹 1. If Predicting Ratings (e.g., Netflix predicting 4.5⭐)
+
+We treat it like a regression problem:
+
+* **RMSE (Root Mean Squared Error)** → penalizes large errors.
+* **MAE (Mean Absolute Error)** → average absolute difference between predicted and actual ratings.
+
+---
+
+## 🔹 2. If Recommending Top-N Items (e.g., Top 10 movies for a user)
+
+We treat it like a ranking/classification problem:
+
+* **Precision\@K:** How many recommended items in top-K are relevant?
+* **Recall\@K:** How many of the relevant items were captured in top-K?
+* **F1\@K:** Harmonic mean of Precision\@K and Recall\@K.
+* **MAP (Mean Average Precision):** Averages precision over ranked lists.
+* **NDCG (Normalized Discounted Cumulative Gain):** Rewards correct ranking order (higher score if relevant items appear at top).
+* **Hit Rate:** Did at least one relevant item appear in recommendations?
+
+---
+
+----------------------------------------------------------------------------------------------------------------------------------------
+23- What are some ways to make your model more robust to outliers?
+----------------------------------------------------------------------------------------------------------------------------------------
+utliers can really mess up models if not handled properly. Here are **ways to make models more robust to outliers**:
+
+---
+
+## 🔹 1. Data Preprocessing
+
+* **Remove outliers:** Use statistical tests (e.g., z-score > 3, IQR method).
+* **Transform data:** Apply **log, square root, or Box-Cox** transformations to reduce skew.
+* **Cap/floor (Winsorization):** Replace extreme values with thresholds.
+
+---
+
+## 🔹 2. Use Robust Models
+
+* **Tree-based models** (Decision Trees, Random Forest, XGBoost) → less sensitive to outliers.
+* **Regularization models** (Lasso/Ridge) → reduce effect of extreme coefficients.
+* **Robust Regression** (Huber loss, RANSAC) → less influenced by outliers compared to ordinary least squares.
+
+---
+
+## 🔹 3. Use Robust Metrics
+
+* Instead of **MSE (very sensitive)**, use:
+
+  * **MAE (Mean Absolute Error)**
+  * **Huber Loss** (mix of MAE + MSE)
+  * **Quantile Loss**
+
+---
+
+----------------------------------------------------------------------------------------------------------------------------------------
+24- How can you measure the performance of a dimensionality reduction algorithm on your dataset?
+----------------------------------------------------------------------------------------------------------------------------------------
+Sure 👍 Here’s the **short version**:
+
+---
+
+## 🔹 Measuring Dimensionality Reduction Performance
+
+1. **Explained Variance / Reconstruction Error** → How much info is preserved (PCA).
+2. **Neighborhood Preservation** → Metrics like **Trustworthiness** (similar points stay close).
+3. **Downstream Task Performance** → Accuracy/F1 for classification, Silhouette/ARI for clustering.
+4. **Visualization Quality** → How well clusters separate in 2D/3D plots (t-SNE, UMAP).
+
+---
+
+----------------------------------------------------------------------------------------------------------------------------------------
+25- What is Data Leakage? List some ways using which you can overcome this problem.
+----------------------------------------------------------------------------------------------------------------------------------------
+---
+
+## 🔹 Data Leakage
+
+When information from the **test set or future data** sneaks into training, making the model look unrealistically good but fail in production.
+
+---
+
+## 🔹 How to Prevent It
+
+1. Split data **before preprocessing**.
+2. Use **pipelines** (fit only on train, apply on test).
+3. Remove features unavailable at prediction time.
+4. Use **time-based splits** for time-series.
+5. Validate with **cross-validation + domain knowledge**.
+
+---
+
+✅ In short: **Keep train/test fully isolated, avoid future info, and use pipelines.**
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------
+
 ----------------------------------------------------------------------------------------------------------------------------------------
