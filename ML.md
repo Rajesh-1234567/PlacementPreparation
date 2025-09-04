@@ -224,6 +224,16 @@ While decision trees are useful in the above scenarios, they are prone to overfi
 12- Why Logistic Regression is called regression?
 ----------------------------------------------------------------------------------------------------------------------------------------
 Logistic Regression is called "regression" because it originates from linear regression, modeling the relationship between features and the probability of an outcome. It uses regression techniques to predict continuous probabilities (not directly class labels) and applies the sigmoid function to map these probabilities. The term comes from its historical development as an extension of regression for classification problems.
+
+| Aspect              | Linear Regression                  | Logistic Regression                                |
+| ------------------- | ---------------------------------- | -------------------------------------------------- |
+| **Output Type**     | Continuous value (−∞ to +∞)        | Probability (0 to 1)                               |
+| **Target Variable** | Continuous                         | Categorical (binary/multiclass)                    |
+| **Equation Form**   | $y = \beta_0 + \beta_1x + \dots$   | $p = \frac{1}{1+e^{-z}}$                           |
+| **Assumptions**     | Linearity between input and output | Linearity between input and **log-odds** of output |
+| **Error Measure**   | Mean Squared Error (MSE)           | Log Loss / Cross-Entropy                           |
+| **Use Case**        | Predicting prices, scores, trends  | Predicting classes (spam, churn, disease)          |
+
 ----------------------------------------------------------------------------------------------------------------------------------------
 13- What is Online Machine Learning? How is it different from Offline machine learning? List some of it’s applications
 ----------------------------------------------------------------------------------------------------------------------------------------
