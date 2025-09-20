@@ -1021,3 +1021,162 @@ Java supports different types of inner classes, which are useful for logically g
 
 If you master these additional topics and concepts, you'll have a deeper understanding of OOP in Java and the ability to handle complex programming challenges. Each of these topics ties into real-world coding problems and professional software design practices.
 
+Nice 👍 Multithreading is a very important Java concept. Let me break it down step by step with examples.
+
+---
+
+# 🔹 **What is Multithreading in Java?**
+
+* **Multithreading** means running **multiple threads** (lightweight processes) **concurrently** within a single program.
+* A **thread** is the smallest unit of execution.
+* Java provides built-in support for multithreading via the **`Thread` class** and the **`Runnable` interface**.
+
+---
+
+# 🔹 **Ways to Implement Multithreading in Java**
+
+There are **two main ways**:
+
+---
+
+## 1️⃣ By Extending the `Thread` Class
+
+* Create a class that **extends `Thread`**.
+* Override the `run()` method.
+* Start the thread using `start()` (not `run()` directly).
+
+```java
+class MyThread extends Thread {
+    @Override
+    public void run() {
+        // Task for the thread
+        for (int i = 1; i <= 5; i++) {
+            System.out.println(Thread.currentThread().getName() + " - Count: " + i);
+        }
+    }
+}
+
+public class ThreadExample {
+    public static void main(String[] args) {
+        MyThread t1 = new MyThread();
+        MyThread t2 = new MyThread();
+
+        t1.start(); // starts a new thread
+        t2.start(); // runs in parallel
+    }
+}
+```
+
+---
+
+## 2️⃣ By Implementing the `Runnable` Interface
+
+* Create a class that **implements `Runnable`**.
+* Pass it to a `Thread` object.
+* Start with `start()`.
+
+```java
+class MyRunnable implements Runnable {
+    @Override
+    public void run() {
+        // Task for the thread
+        for (int i = 1; i <= 5; i++) {
+            System.out.println(Thread.currentThread().getName() + " - Count: " + i);
+        }
+    }
+}
+
+public class RunnableExample {
+    public static void main(String[] args) {
+        Thread t1 = new Thread(new MyRunnable(), "Thread-1");
+        Thread t2 = new Thread(new MyRunnable(), "Thread-2");
+
+        t1.start();
+        t2.start();
+    }
+}
+```
+
+---
+
+## 3️⃣ Using **Lambda Expressions** (Java 8+)
+
+For simple tasks, you can create threads in one line:
+
+```java
+public class LambdaThread {
+    public static void main(String[] args) {
+        Thread t1 = new Thread(() -> {
+            for (int i = 1; i <= 5; i++) {
+                System.out.println(Thread.currentThread().getName() + " - Count: " + i);
+            }
+        });
+
+        Thread t2 = new Thread(() -> {
+            for (int i = 1; i <= 5; i++) {
+                System.out.println(Thread.currentThread().getName() + " - Count: " + i);
+            }
+        });
+
+        t1.start();
+        t2.start();
+    }
+}
+```
+
+---
+
+# 🔹 **Thread Methods You Should Know**
+
+* `start()` → Starts a new thread.
+* `run()` → Code executed by the thread.
+* `sleep(ms)` → Pause thread for given time.
+* `join()` → Wait for a thread to finish.
+* `yield()` → Hint to scheduler to give other threads a chance.
+* `isAlive()` → Checks if thread is still running.
+
+---
+
+# 🔹 **Example with `sleep()` and `join()`**
+
+```java
+class Worker extends Thread {
+    public void run() {
+        for (int i = 1; i <= 3; i++) {
+            System.out.println(getName() + " - Step " + i);
+            try {
+                Thread.sleep(500); // pause for 0.5 sec
+            } catch (InterruptedException e) {
+                System.out.println(e);
+            }
+        }
+    }
+}
+
+public class ThreadControl {
+    public static void main(String[] args) throws InterruptedException {
+        Worker t1 = new Worker();
+        Worker t2 = new Worker();
+
+        t1.start();
+        t1.join(); // main thread waits for t1 to finish
+
+        t2.start();
+    }
+}
+```
+
+---
+
+# ✅ Summary
+
+* Multithreading in Java allows concurrent execution.
+* Two main approaches:
+
+  1. **Extending Thread class**
+  2. **Implementing Runnable interface**
+* Use **thread methods** (`start`, `sleep`, `join`, etc.) to control execution.
+
+---
+
+👉 Do you want me to also show you a **real-world example** (like downloading files or printing even/odd numbers using multiple threads) to make it more practical?
